@@ -1,13 +1,12 @@
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import app from "./app.js";
+import { connectMongo } from "./config/mongo.js";
 
 dotenv.config();
 
-await mongoose.connect(process.env.MONGO_URI);
-console.log("MongoDB connected");
+await connectMongo();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
