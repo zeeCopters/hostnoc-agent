@@ -2,6 +2,7 @@ import express from "express";
 import pdfRoutes from "./routes/pdf.routes.js";
 import { setupSwagger } from "./config/swagger.js";
 import ragRoutes from "./routes/rag.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 const app = express();
 
@@ -11,5 +12,8 @@ setupSwagger(app);
 
 app.use("/api", pdfRoutes);
 app.use("/api", ragRoutes);
+app.use("/api", userRoutes);
+
+app.set("trust proxy", true);
 
 export default app;
