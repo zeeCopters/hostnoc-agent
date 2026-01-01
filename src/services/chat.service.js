@@ -7,21 +7,23 @@ const chatRepo = new ChatRepository();
 
 export class ChatService {
   async handleMessage({ userId, message }) {
-    // 1️⃣ Save user message
+    // 1️⃣ Fetch the last 10 messages for conversation context (Memory)
+    const history = await chatRepo.getRecentMessages(userId, 10);
+
+    // 2️⃣ Save the current user message to MongoDB
     await chatRepo.saveMessage({
       userId,
       role: "user",
       message,
     });
 
-    // Normalize question for exact match
     const normalizedQuestion = message.trim().toLowerCase();
 
-    // 2️⃣ Get all namespaces
+    // 3️⃣ Get all PDF namespaces for vector search
     const pdfs = await PdfFile.find({});
     const namespaces = pdfs.map((p) => p.namespace);
 
-    // 3️⃣ Embed question
+    // 4️⃣ Embed the current question for vector search
     const embedding = await openai.embeddings.create({
       model: "text-embedding-3-small",
       input: message,
@@ -33,7 +35,7 @@ export class ChatService {
     let chunks = [];
     let exactAnswer = null;
 
-    // 4️⃣ Retrieve from Pinecone
+    // 5️⃣ Retrieve context from Pinecone
     for (const ns of namespaces) {
       const res = await index.namespace(ns).query({
         vector,
@@ -45,61 +47,61 @@ export class ChatService {
         const text = match.metadata?.text;
         if (!text || typeof text !== "string") continue;
 
-        // 🔍 Try to extract Q/A from raw text
+        // Check for exact Q&A pattern matches in the documents
         const qaMatch = text.match(/Q[:\-]\s*(.+?)\n*A[:\-]\s*([\s\S]+)/i);
-
         if (qaMatch) {
           const question = qaMatch[1].trim().toLowerCase();
           const answer = qaMatch[2].trim();
-
           if (question === normalizedQuestion) {
             exactAnswer = answer;
             break;
           }
         }
 
-        // Semantic fallback
-        if (match.score >= 0.75) {
+        if (match.score >= 0.5) {
           chunks.push(text);
         }
       }
-
       if (exactAnswer) break;
     }
 
-    // 5️⃣ Return exact document answer (NO LLM)
+    // 6️⃣ If an exact document match is found, return it immediately
     if (exactAnswer) {
       await chatRepo.saveMessage({
         userId,
         role: "assistant",
         message: exactAnswer,
       });
-
       return exactAnswer;
     }
 
-    // 6️⃣ Strict grounding check
+    // 7️⃣ Fallback if no context is found in Pinecone
     if (!chunks.length) {
       const fallback = "I don’t know based on the provided documents.";
-
       await chatRepo.saveMessage({
         userId,
         role: "assistant",
         message: fallback,
       });
-
       return fallback;
     }
 
-    // 7️⃣ Build grounded prompt
+    // 8️⃣ Format MongoDB history for OpenAI
+    const chatHistory = history.map((msg) => ({
+      role: msg.role === "user" ? "user" : "assistant",
+      content: msg.message,
+    }));
+
+    // 9️⃣ Build grounded system prompt
     const systemPrompt = `
-You are a document-grounded assistant.
+You are the HostNoc AI Customer Support Agent.
+Your tone is professional, helpful, and confident.
 
 STRICT RULES:
 - Answer using ONLY the information inside <context>.
-- Do NOT use prior knowledge or assumptions.
-- If the answer is not explicitly stated, reply exactly:
-  "I don’t know based on the provided documents."
+- Use the conversation history to understand pronouns (like "it", "that", "the first one").
+- Do NOT use prior knowledge outside the provided context.
+- If the answer is not in <context>, reply exactly: "I don’t know based on the provided documents."
 `;
 
     const userPrompt = `
@@ -111,12 +113,13 @@ Question:
 ${message}
 `;
 
-    // 8️⃣ Ask LLM (STRICT RAG)
+    // 🔟 Call LLM with History + Context
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0,
       messages: [
         { role: "system", content: systemPrompt },
+        ...chatHistory, // Injection of the last 10 messages
         { role: "user", content: userPrompt },
       ],
     });
@@ -125,7 +128,7 @@ ${message}
       completion.choices[0]?.message?.content ||
       "I don’t know based on the provided documents.";
 
-    // 9️⃣ Save AI reply
+    // 1️⃣1️⃣ Save AI response to MongoDB
     await chatRepo.saveMessage({
       userId,
       role: "assistant",
