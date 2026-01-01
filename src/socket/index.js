@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { registerRAGSocket } from "./rag.socket.js";
+import { registerChatSocket } from "./chat.socket.js";
 
 export function initSocket(server) {
   const io = new Server(server, {
@@ -7,8 +7,13 @@ export function initSocket(server) {
   });
 
   io.on("connection", (socket) => {
-    console.log("🟢 Client connected:", socket.id);
-    registerRAGSocket(socket);
+    console.log("🟢 Connected:", socket.id);
+
+    registerChatSocket(socket);
+
+    socket.on("disconnect", () => {
+      console.log("🔴 Socket disconnected:", socket.id);
+    });
   });
 
   return io;
