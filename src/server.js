@@ -8,12 +8,15 @@ dotenv.config();
 
 await connectMongo();
 
+// Create ONE http server
 const server = http.createServer(app);
 
-// Init Socket.IO
+// Attach Socket.IO to the SAME server
 initSocket(server);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+
+// 🚀 START THE HTTP SERVER (NOT app.listen)
+server.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

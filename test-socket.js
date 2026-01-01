@@ -7,7 +7,7 @@ socket.on("connect", () => {
 
   socket.emit("chat", {
     userId: "695526239e1f207baa235eed",
-    message: "Give me summary of updated document.",
+    message: "Tell me about Dedicated Server Hosting",
   });
 });
 
