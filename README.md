@@ -2,7 +2,7 @@
 
 A document-grounded AI chatbot backend with RAG, Pinecone indexing, Socket streaming, and MongoDB persistence for chats and users.
 
-\n
+/n
 🚀 **Overview**
 
 HostNoc-Agent is a Node.js backend that allows:
