@@ -1,8 +1,9 @@
-🛡️ HostNoc-Agent
+🛡️ **HostNoc-Agent**
 
 A document-grounded AI chatbot backend with RAG, Pinecone indexing, Socket streaming, and MongoDB persistence for chats and users.
 
-🚀 Overview
+
+🚀 **Overview**
 
 HostNoc-Agent is a Node.js backend that allows:
 
@@ -20,7 +21,7 @@ HostNoc-Agent is a Node.js backend that allows:
 
 ✔ REST APIs for users and messages
 
-🔍 Built with:
+🔍 **Built with:**
 
 Express (ESM)
 
@@ -34,7 +35,8 @@ MongoDB + Mongoose
 
 pnpm package manager
 
-📦 Features
+
+📦 **Features**
 
 ✅ Upload and index PDFs
 ✅ Extract vectors + store with Pinecone
@@ -46,7 +48,9 @@ pnpm package manager
 ✅ Paginated message history REST API
 ✅ Swagger API documentation
 
-📋 Quick Start
+
+📋 **Quick Start**
+
 1️⃣ Clone the repo
 git clone https://github.com/teamcustombranex/hostnoc_chatbot_agent
 cd hostnoc-agent
@@ -67,7 +71,8 @@ OPENAI_API_KEY=your_key
 4️⃣ Run server
 pnpm run dev
 
-🧠 RAG & AI Behavior
+
+🧠 **RAG & AI Behavior**
 
 Uses OpenAI embeddings (text-embedding-3-small)
 
@@ -83,7 +88,8 @@ No hallucination
 
 Configurable for production models (GPT-4o, GPT-4o-mini, etc.)
 
-📚 Swagger Documentation
+
+📚 **Swagger Documentation**
 
 Available at:
 
@@ -98,7 +104,8 @@ PDF upload
 
 Chat history API
 
-🗂️ Project Structure
+
+🗂️ **Project Structure**
 src/
 ├── app.js            # Express setup
 ├── server.js         # HTTP + Socket initialization
@@ -111,21 +118,24 @@ src/
 ├── socket/           # Socket handlers
 ├── utils/            # PDF parser & helpers
 
-📌 Design Patterns
+
+📌 **Design Patterns**
 
 ✔ Repository pattern
 ✔ Clean separation (controller → service → repository)
 ✔ Real-time + REST
 ✔ Strict RAG prompt design
 
-🛠️ Deployment Notes
+
+🛠️ **Deployment Notes**
 
 ✔ Set trust proxy if behind a proxy
 ✔ Persist Pinecone index
 ✔ Secure Socket connections
 ✔ Use environment configs
 
-🧪 Development Tips
+
+🧪 **Development Tips**
 
 Enable debug logs:
 
