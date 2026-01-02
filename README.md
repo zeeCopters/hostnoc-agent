@@ -123,16 +123,22 @@ Chat history API
 📌 **Design Patterns**
 
 ✔ Repository pattern
+
 ✔ Clean separation (controller → service → repository)
+
 ✔ Real-time + REST
+
 ✔ Strict RAG prompt design
 
 
 🛠️ **Deployment Notes**
 
 ✔ Set trust proxy if behind a proxy
+
 ✔ Persist Pinecone index
+
 ✔ Secure Socket connections
+
 ✔ Use environment configs
 
 
