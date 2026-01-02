@@ -5,12 +5,19 @@ A document-grounded AI chatbot backend with RAG, Pinecone indexing, Socket strea
 🚀 Overview
 
 HostNoc-Agent is a Node.js backend that allows:
+
 ✔ Uploading PDF documents
+
 ✔ Indexing them into a Pinecone vector store
+
 ✔ Storing metadata (namespace, page count) in MongoDB
+
 ✔ Real-time conversational query (RAG) via Socket.IO
+
 ✔ Context-grounded AI answers (no hallucinations)
+
 ✔ Chat history saved per user
+
 ✔ REST APIs for users and messages
 
 🔍 Built with:
