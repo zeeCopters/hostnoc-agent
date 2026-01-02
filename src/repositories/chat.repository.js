@@ -48,4 +48,12 @@ export class ChatRepository {
       },
     ]);
   }
+
+  async getChatsByUserId({ userId, limit = 20, offset = 0 }) {
+    return Chat.find({ userId })
+      .sort({ createdAt: -1 }) // latest first
+      .skip(offset)
+      .limit(limit)
+      .lean();
+  }
 }
