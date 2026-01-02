@@ -74,9 +74,13 @@ pnpm install
 Copy .env.example → .env and fill in values:
 
 PORT=3000
+
 MONGO_URI=mongodb://localhost:27017/hostnoc-agent
+
 PINECONE_API_KEY=your_key
+
 PINECONE_INDEX_NAME=your_index
+
 OPENAI_API_KEY=your_key
 
 4️⃣ Run server
@@ -85,19 +89,19 @@ pnpm run dev
 
 🧠 **RAG & AI Behavior**
 
-Uses OpenAI embeddings (text-embedding-3-small)
+- Uses OpenAI embeddings (text-embedding-3-small)
 
-Pinecone for retrieval
+- Pinecone for retrieval
 
-Answers are grounded using a strict prompt:
+- Answers are grounded using a strict prompt:
 
-Only uses document context
+- Only uses document context
 
-Refuses if answer not found
+- Refuses if answer not found
 
-No hallucination
+- No hallucination
 
-Configurable for production models (GPT-4o, GPT-4o-mini, etc.)
+- Configurable for production models (GPT-4o, GPT-4o-mini, etc.)
 
 
 📚 **Swagger Documentation**
@@ -114,20 +118,6 @@ User API
 PDF upload
 
 Chat history API
-
-
-🗂️ **Project Structure**
-src/
-├── app.js            # Express setup
-├── server.js         # HTTP + Socket initialization
-├── config/           # DB & Pinecone & OpenAI configs
-├── controllers/      # HTTP request handlers
-├── services/         # Business logic
-├── repositories/     # Data access layer
-├── models/           # Mongoose models
-├── routes/           # Express routes
-├── socket/           # Socket handlers
-├── utils/            # PDF parser & helpers
 
 
 📌 **Design Patterns**
