@@ -152,4 +152,12 @@ User Question: ${message}
       throw new Error("Could not fetch user list.");
     }
   }
+
+  async getUserChats(userId, limit = 20, offset = 0) {
+    return chatRepo.getChatsByUserId({
+      userId,
+      limit,
+      offset,
+    });
+  }
 }

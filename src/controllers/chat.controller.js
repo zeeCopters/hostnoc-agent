@@ -1,4 +1,5 @@
 import { ChatService } from "../services/chat.service.js";
+import mongoose from "mongoose";
 
 const chatService = new ChatService();
 
@@ -28,22 +29,18 @@ export class ChatController {
         return res.status(400).json({ error: "Invalid userId" });
       }
 
-      const chats = await chatRepo.getChatsByUserId({
-        userId,
-        limit,
-        offset,
-      });
+      const messages = await chatService.getUserChats(userId, limit, offset);
 
-      res.status(200).json({
+      return res.status(200).json({
         userId,
         limit,
         offset,
-        count: chats.length,
-        messages: chats,
+        count: messages.length,
+        messages,
       });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Internal Server Error" });
+      console.error("❌ getUserChats error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }
