@@ -20,4 +20,32 @@ export class ChatRepository {
       .limit(limit)
       .lean();
   }
+
+  async getAllUsersLastMessages() {
+    return await Chat.aggregate([
+      {
+        $sort: { createdAt: -1 }, // Sort all messages by date (newest first)
+      },
+      {
+        $group: {
+          _id: "$userId", // Group by userId
+          lastMessage: { $first: "$message" }, // Get the first message after sorting
+          role: { $first: "$role" },
+          createdAt: { $first: "$createdAt" },
+        },
+      },
+      {
+        $project: {
+          userId: "$_id",
+          _id: 0,
+          lastMessage: 1,
+          role: 1,
+          createdAt: 1,
+        },
+      },
+      {
+        $sort: { createdAt: -1 }, // Final sort to show users with the newest activity first
+      },
+    ]);
+  }
 }

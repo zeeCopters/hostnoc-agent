@@ -142,4 +142,14 @@ User Question: ${message}
 
     return aiMessage;
   }
+
+  async getUserListWithLastMessage() {
+    try {
+      const users = await chatRepo.getAllUsersLastMessages();
+      return users;
+    } catch (error) {
+      console.error("Error in ChatService.getUserListWithLastMessage:", error);
+      throw new Error("Could not fetch user list.");
+    }
+  }
 }
