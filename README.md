@@ -23,39 +23,50 @@ HostNoc-Agent is a Node.js backend that allows:
 
 🔍 **Built with:**
 
-Express (ESM)
+- Express (ESM)
 
-Socket.IO (real-time AI responses)
+- Socket.IO (real-time AI responses)
 
-OpenAI (LLM + embeddings)
+- OpenAI (LLM + embeddings)
 
-Pinecone (vector retrieval)
+- Pinecone (vector retrieval)
 
-MongoDB + Mongoose
+- MongoDB + Mongoose
 
-pnpm package manager
+- pnpm package manager
 
 
 📦 **Features**
 
 ✅ Upload and index PDFs
+
 ✅ Extract vectors + store with Pinecone
+
 ✅ Chat with AI using RAG
+
 ✅ Grounded answers only (no external hallucination)
+
 ✅ Socket streaming responses
+
 ✅ Store/retrieve chats by user
+
 ✅ User creation (IP captured automatically)
+
 ✅ Paginated message history REST API
+
 ✅ Swagger API documentation
 
 
 📋 **Quick Start**
 
 1️⃣ Clone the repo
+
 git clone https://github.com/teamcustombranex/hostnoc_chatbot_agent
+
 cd hostnoc-agent
 
 2️⃣ Install dependencies
+
 pnpm install
 
 3️⃣ Create .env
