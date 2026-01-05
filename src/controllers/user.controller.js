@@ -3,32 +3,25 @@ import { UserService } from "../services/user.service.js";
 const userService = new UserService();
 
 export class UserController {
-  static async create(req, res) {
+  static async createUser(req, res) {
     try {
       const { fullName, email, phone } = req.body;
 
-      if (!fullName || !email || !phone) {
-        return res.status(400).json({ error: "All fields are required" });
-      }
-
-      // ✅ Capture IP WITHOUT request params
-      const ipAddress =
+      const ip =
         req.headers["x-forwarded-for"]?.split(",")[0] ||
-        req.socket.remoteAddress ||
-        req.ip;
+        req.socket.remoteAddress;
 
       const user = await userService.createUser({
         fullName,
         email,
         phone,
-        ipAddress,
+        ip,
       });
 
-      res.status(201).json({
-        id: user._id,
-      });
+      return res.status(201).json({ id: user._id });
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      console.error("❌ createUser error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

@@ -38,6 +38,6 @@ const router = Router();
  *                 id:
  *                   type: string
  */
-router.post("/users", UserController.create);
+router.post("/users", UserController.createUser);
 
 export default router;
