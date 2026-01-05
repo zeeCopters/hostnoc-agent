@@ -22,30 +22,52 @@ export class ChatRepository {
   }
 
   async getAllUsersLastMessages() {
-    return await Chat.aggregate([
-      {
-        $sort: { createdAt: -1 }, // Sort all messages by date (newest first)
-      },
+    return Chat.aggregate([
+      { $sort: { createdAt: -1 } },
+
       {
         $group: {
-          _id: "$userId", // Group by userId
-          lastMessage: { $first: "$message" }, // Get the first message after sorting
-          role: { $first: "$role" },
-          createdAt: { $first: "$createdAt" },
+          _id: "$userId",
+          lastMessage: { $first: "$message" },
+          lastMessageRole: { $first: "$role" },
+          lastMessageTime: { $first: "$createdAt" },
         },
       },
+
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$user",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
       {
         $project: {
-          userId: "$_id",
           _id: 0,
+          userId: "$_id",
+
+          // ✅ FIXED FIELD NAMES
+          userName: { $ifNull: ["$user.fullName", "Unknown User"] },
+          country: {
+            $ifNull: ["$user.location.countryName", "Unknown"],
+          },
+
           lastMessage: 1,
-          role: 1,
-          createdAt: 1,
+          lastMessageRole: 1,
+          lastMessageTime: 1,
         },
       },
-      {
-        $sort: { createdAt: -1 }, // Final sort to show users with the newest activity first
-      },
+
+      { $sort: { lastMessageTime: -1 } },
     ]);
   }
 
