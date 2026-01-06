@@ -7,15 +7,16 @@ export function initSocket(server) {
   });
 
   io.on("connection", (socket) => {
-    console.log("🟢 Connected:", socket.id);
-
-    // 👤 Human agent joins AGENTS room
-    socket.on("joinAgent", () => {
-      socket.join("AGENTS");
-      console.log("🧑 Agent joined AGENTS room:", socket.id);
+    socket.on("joinUser", ({ userId }) => {
+      socket.join(userId);
+      console.log("👤 User joined room:", userId);
     });
 
-    // Register chat events
+    socket.on("joinAgent", () => {
+      socket.join("AGENTS");
+      console.log("🧑 Agent joined AGENTS");
+    });
+
     registerChatSocket(socket);
 
     socket.on("disconnect", () => {

@@ -15,40 +15,29 @@ export function registerChatSocket(socket) {
 
   socket.on("chat", async ({ userId, message }) => {
     try {
-      if (!userId || !message) {
-        socket.emit("error", "userId and message are required");
-        return;
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        socket.emit("error", "Invalid userId");
-        return;
-      }
-
       const user = await User.findById(userId).lean();
 
-      // 🧑 HUMAN MODE → STOP AI
+      console.log("🧠 Chat mode:", user.chatMode);
+
+      // 🤖 AI MODE → AI ONLY
+      if (user.chatMode === "AI") {
+        const reply = await chatService.handleMessage({ userId, message });
+        socket.emit("reply", reply);
+        return; // ❗ STOP HERE
+      }
+
+      // 🧑 HUMAN MODE → HUMAN ONLY
       if (user.chatMode === "HUMAN") {
         await chatService.saveUserMessageOnly(userId, message);
 
-        // Notify human agents
         socket.to("AGENTS").emit("newHumanMessage", {
           userId,
           message,
         });
 
-        return; // ❌ STOP HERE (NO AI)
+        return; // ❗ STOP HERE
       }
-
-      // 🤖 AI MODE
-      const reply = await chatService.handleMessage({
-        userId,
-        message,
-      });
-
-      socket.emit("reply", reply);
     } catch (err) {
-      console.error(err);
       socket.emit("error", err.message);
     }
   });
@@ -61,5 +50,16 @@ export function registerChatSocket(socket) {
     });
 
     socket.emit("chatModeUpdated", { mode });
+  });
+
+  socket.on("humanReply", async ({ userId, message }) => {
+    try {
+      await chatService.saveUserMessageOnly(userId, message);
+
+      // Send message to USER room
+      socket.to(userId).emit("reply", message);
+    } catch (err) {
+      socket.emit("error", err.message);
+    }
   });
 }

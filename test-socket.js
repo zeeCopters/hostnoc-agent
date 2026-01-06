@@ -7,13 +7,15 @@ const USER_ID = "695b6fda6859df810e722fd4";
 socket.on("connect", () => {
   console.log("👤 User connected:", socket.id);
 
+  // ✅ JOIN USER ROOM FIRST
+  socket.emit("joinUser", { userId: USER_ID });
+
   // 🔹 DEFAULT = AI MODE
   socket.emit("chat", {
     userId: USER_ID,
     message: "Hello AI",
   });
 
-  // ⏳ Switch to HUMAN after 5 seconds
   setTimeout(() => {
     console.log("🔁 Switching to HUMAN mode");
 
@@ -22,7 +24,6 @@ socket.on("connect", () => {
       mode: "HUMAN",
     });
 
-    // Send message to HUMAN
     setTimeout(() => {
       socket.emit("chat", {
         userId: USER_ID,
