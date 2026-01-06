@@ -15,8 +15,9 @@ const server = http.createServer(app);
 initSocket(server);
 
 const PORT = process.env.PORT || 3000;
+const ENV = process.env.ENV || "http://localhost:";
 
 // 🚀 START THE HTTP SERVER (NOT app.listen)
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on ${ENV}${PORT}`);
 });
