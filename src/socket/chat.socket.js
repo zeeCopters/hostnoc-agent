@@ -1,5 +1,6 @@
 import { ChatService } from "../services/chat.service.js";
 import mongoose from "mongoose";
+import User from "../models/User.js";
 
 const chatService = new ChatService();
 
@@ -11,6 +12,7 @@ export function registerChatSocket(socket) {
    *   message: "Hello"
    * }
    */
+
   socket.on("chat", async ({ userId, message }) => {
     try {
       if (!userId || !message) {
@@ -23,6 +25,22 @@ export function registerChatSocket(socket) {
         return;
       }
 
+      const user = await User.findById(userId).lean();
+
+      // 🧑 HUMAN MODE → STOP AI
+      if (user.chatMode === "HUMAN") {
+        await chatService.saveUserMessageOnly(userId, message);
+
+        // Notify human agents
+        socket.to("AGENTS").emit("newHumanMessage", {
+          userId,
+          message,
+        });
+
+        return; // ❌ STOP HERE (NO AI)
+      }
+
+      // 🤖 AI MODE
       const reply = await chatService.handleMessage({
         userId,
         message,
@@ -33,5 +51,15 @@ export function registerChatSocket(socket) {
       console.error(err);
       socket.emit("error", err.message);
     }
+  });
+
+  socket.on("toggleChatMode", async ({ userId, mode }) => {
+    if (!["AI", "HUMAN"].includes(mode)) return;
+
+    await User.findByIdAndUpdate(userId, {
+      chatMode: mode,
+    });
+
+    socket.emit("chatModeUpdated", { mode });
   });
 }

@@ -143,6 +143,14 @@ User Question: ${message}
     return aiMessage;
   }
 
+  async saveUserMessageOnly(userId, message) {
+    return chatRepo.saveMessage({
+      userId,
+      role: "user",
+      message,
+    });
+  }
+
   async getUserListWithLastMessage() {
     try {
       const users = await chatRepo.getAllUsersLastMessages();

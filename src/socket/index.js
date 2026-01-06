@@ -9,6 +9,13 @@ export function initSocket(server) {
   io.on("connection", (socket) => {
     console.log("🟢 Connected:", socket.id);
 
+    // 👤 Human agent joins AGENTS room
+    socket.on("joinAgent", () => {
+      socket.join("AGENTS");
+      console.log("🧑 Agent joined AGENTS room:", socket.id);
+    });
+
+    // Register chat events
     registerChatSocket(socket);
 
     socket.on("disconnect", () => {

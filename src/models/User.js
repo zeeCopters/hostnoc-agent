@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema(
     ipAddress: {
       type: String,
     },
+    chatMode: {
+      type: String,
+      enum: ["AI", "HUMAN"],
+      default: "AI",
+    },
     location: LocationSchema,
   },
   { timestamps: true }
