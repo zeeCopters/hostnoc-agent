@@ -17,7 +17,7 @@ export function initSocket(server) {
       console.log("🧑 Agent joined AGENTS");
     });
 
-    registerChatSocket(socket);
+    registerChatSocket(io, socket);
 
     socket.on("disconnect", () => {
       console.log("🔴 Socket disconnected:", socket.id);

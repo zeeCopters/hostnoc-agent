@@ -7,30 +7,39 @@ const USER_ID = "695b6fda6859df810e722fd4";
 socket.on("connect", () => {
   console.log("👤 User connected:", socket.id);
 
-  // ✅ JOIN USER ROOM FIRST
-  socket.emit("joinUser", { userId: USER_ID });
-
-  // 🔹 DEFAULT = AI MODE
-  socket.emit("chat", {
-    userId: USER_ID,
-    message: "Hello AI",
-  });
-
-  setTimeout(() => {
-    console.log("🔁 Switching to HUMAN mode");
-
-    socket.emit("toggleChatMode", {
+  // ✅ INIT WITH ACK (IMPORTANT)
+  socket.emit(
+    "init",
+    {
       userId: USER_ID,
-      mode: "HUMAN",
-    });
+      role: "USER",
+    },
+    () => {
+      console.log("✅ Init completed, safe to chat");
 
-    setTimeout(() => {
+      // 🤖 AI MESSAGE (NOW SAFE)
       socket.emit("chat", {
         userId: USER_ID,
-        message: "I want to talk to a human",
+        message: "Hello AI",
       });
-    }, 1000);
-  }, 5000);
+
+      setTimeout(() => {
+        console.log("🔁 Switching to HUMAN mode");
+
+        socket.emit("toggleChatMode", {
+          userId: USER_ID,
+          mode: "HUMAN",
+        });
+
+        setTimeout(() => {
+          socket.emit("chat", {
+            userId: USER_ID,
+            message: "I want to talk to a human",
+          });
+        }, 1000);
+      }, 20000);
+    }
+  );
 });
 
 socket.on("reply", (msg) => {

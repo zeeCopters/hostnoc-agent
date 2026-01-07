@@ -5,8 +5,14 @@ const socket = io("http://localhost:3000");
 socket.on("connect", () => {
   console.log("🧑‍💻 Admin connected:", socket.id);
 
-  // Join AGENTS room
-  socket.emit("joinAgent");
+  // ✅ CORRECT INIT
+  socket.emit("init", {
+    role: "ADMIN",
+  });
+});
+
+socket.on("humanChatRequested", ({ userId }) => {
+  console.log("🔔 Human chat requested by:", userId);
 });
 
 socket.on("newHumanMessage", ({ userId, message }) => {
@@ -14,7 +20,6 @@ socket.on("newHumanMessage", ({ userId, message }) => {
   console.log("User:", userId);
   console.log("Message:", message);
 
-  // 🧑 Human reply after 2 seconds
   setTimeout(() => {
     socket.emit("humanReply", {
       userId,
