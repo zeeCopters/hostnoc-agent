@@ -1,8 +1,10 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+//const socket = io("http://localhost:3000");
+const socket = io("https://hostnocchat.branex.org");
 
-const USER_ID = "695b6fda6859df810e722fd4";
+//const USER_ID = "695b6fda6859df810e722fd4";
+const USER_ID = "695e433e22e9a78834516d4b";
 
 socket.on("connect", () => {
   console.log("👤 User connected:", socket.id);
