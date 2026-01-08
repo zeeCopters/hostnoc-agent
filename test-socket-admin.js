@@ -1,7 +1,9 @@
 import { io } from "socket.io-client";
 
 //const socket = io("http://localhost:3000");
-const socket = io("https://hostnocchat.branex.org");
+const socket = io("https://hostnocchat.branex.org", {
+  transports: ["websocket"],
+});
 
 socket.on("connect", () => {
   console.log("🧑‍💻 Admin connected:", socket.id);
