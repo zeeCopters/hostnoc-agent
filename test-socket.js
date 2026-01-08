@@ -22,7 +22,7 @@ socket.on("connect", () => {
       // 🤖 AI MESSAGE (NOW SAFE)
       socket.emit("chat", {
         userId: USER_ID,
-        message: "Hello AI",
+        message: "Tell me about shared hosting.",
       });
 
       setTimeout(() => {
