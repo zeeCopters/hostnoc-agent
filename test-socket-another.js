@@ -7,7 +7,7 @@ const socket = io("http://localhost:3000", {
 //   transports: ["websocket"],
 // });
 
-const USER_ID = "695b6fda6859df810e722fd4";
+const USER_ID = "6961016e4cafdf0c1f7f58e5";
 //const USER_ID = "695e433e22e9a78834516d4b";
 
 socket.on("connect", () => {
@@ -26,25 +26,25 @@ socket.on("connect", () => {
       // 🤖 AI MESSAGE (NOW SAFE)
       socket.emit("chat", {
         userId: USER_ID,
-        message: "Tell me about shared hosting.",
+        message: "Tell me about cloud hosting.",
         //message: "Hi.",
       });
 
-      // setTimeout(() => {
-      //   console.log("🔁 Switching to HUMAN mode");
-
-      //   socket.emit("toggleChatMode", {
-      //     userId: USER_ID,
-      //     mode: "HUMAN",
-      //   });
-
       //   setTimeout(() => {
-      //     socket.emit("chat", {
+      //     console.log("🔁 Switching to HUMAN mode");
+
+      //     socket.emit("toggleChatMode", {
       //       userId: USER_ID,
-      //       message: "I want to talk to a human",
+      //       mode: "HUMAN",
       //     });
-      //   }, 1000);
-      // }, 20000);
+
+      //     setTimeout(() => {
+      //       socket.emit("chat", {
+      //         userId: USER_ID,
+      //         message: "I want to talk to a human",
+      //       });
+      //     }, 1000);
+      //   }, 20000);
     }
   );
 });

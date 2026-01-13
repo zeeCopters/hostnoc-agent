@@ -1,4 +1,5 @@
 import { UserService } from "../services/user.service.js";
+import { getSocketIO } from "../socket/socket.instance.js";
 
 const userService = new UserService();
 
@@ -16,6 +17,18 @@ export class UserController {
         email,
         phone,
         ip,
+      });
+
+      // 🔔 Notify ADMINS
+      const io = getSocketIO();
+      io.to("AGENTS").emit("newUserJoined", {
+        msg: "New user joined",
+        user: {
+          userID: user._id,
+          fullName: user.fullName,
+          phone: user.phone,
+          email: user.email,
+        },
       });
 
       return res.status(201).json({ id: user._id });

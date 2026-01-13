@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { registerChatSocket } from "./chat.socket.js";
+import { setSocketIO } from "./socket.instance.js";
 
 export function initSocket(server) {
   const io = new Server(server, {
@@ -9,6 +10,8 @@ export function initSocket(server) {
     },
     transports: ["websocket"],
   });
+
+  setSocketIO(io);
 
   // 🔴 CONNECTION ERROR (before connection)
   io.engine.on("connection_error", (err) => {
